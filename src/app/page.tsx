@@ -10,17 +10,9 @@ import { StockRecommendation } from "@/services/stock-recommendation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RefreshCw, CheckCircle, Info } from "lucide-react";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { Check, ChevronsUpDown } from "lucide-react"
+  getStockFundamentalData,
+  StockFundamentalData
+} from "@/services/stock-fundamental-data";
 
 const stockTickers = [
   "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "JPM", "V", "UNH", "WMT"
@@ -30,6 +22,7 @@ export default function Home() {
   const [ticker, setTicker] = useState('');
   const [recommendation, setRecommendation] = useState<StockRecommendation | null>(null);
   const [sentimentAnalysis, setSentimentAnalysis] = useState<any>(null);
+  const [fundamentalData, setFundamentalData] = useState<StockFundamentalData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -47,14 +40,17 @@ export default function Home() {
     try {
       const recommendationPromise = getStockRecommendation(ticker);
       const sentimentPromise = analyzeStockSentiment({ ticker });
+      const fundamentalDataPromise = getStockFundamentalData(ticker);
 
-      const [recommendationResult, sentimentResult] = await Promise.all([
+      const [recommendationResult, sentimentResult, fundamentalDataResult] = await Promise.all([
         recommendationPromise,
         sentimentPromise,
+        fundamentalDataPromise
       ]);
 
       setRecommendation(recommendationResult);
       setSentimentAnalysis(sentimentResult);
+      setFundamentalData(fundamentalDataResult);
     } catch (e: any) {
       console.error("Error fetching data:", e);
       setError(e.message || "Failed to fetch data. Please try again.");
@@ -94,7 +90,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-start min-h-screen bg-secondary p-8">
       <h1 className="text-4xl font-bold text-primary mb-4">StockSage</h1>
       <p className="text-muted-foreground mb-8">
-        Get stock recommendations based on sentiment analysis.
+        Get stock recommendations based on sentiment analysis and fundamental data.
       </p>
 
       <div className="flex w-full max-w-md space-x-2 mb-6">
@@ -142,7 +138,7 @@ export default function Home() {
         </Alert>
       )}
 
-      {recommendation && sentimentAnalysis && !error && (
+      {recommendation && sentimentAnalysis && fundamentalData && !error && (
         <div className="w-full max-w-md space-y-4">
           <Card>
             <CardHeader>
@@ -174,6 +170,20 @@ export default function Home() {
             <CardContent>
               <p>Sentiment Score: {sentimentAnalysis.sentimentScore}</p>
               <p>{sentimentAnalysis.analysis}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Fundamental Data</CardTitle>
+              <CardDescription>
+                Key fundamental indicators
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>MACD: {fundamentalData.macd}</p>
+              <p>SMA: {fundamentalData.sma}</p>
+              <p>Volume: {fundamentalData.volume}</p>
             </CardContent>
           </Card>
         </div>
