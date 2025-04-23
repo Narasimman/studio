@@ -14,14 +14,29 @@ export async function getStockHistoricalData(ticker: string, period: string): Pr
   const startDate = new Date(today.setDate(today.getDate() - 30));
   const data: StockHistoricalData[] = [];
 
+  let currentPrice = Math.random() * 100 + 100; // Initialize with a random price
+
   for (let i = 0; i < 30; i++) {
     const currentDate = new Date(startDate.setDate(startDate.getDate() + 1));
+
+    // Simulate price change with a small random factor
+    const priceChange = Math.random() * 4 - 2; // Random value between -2 and 2
+    currentPrice += priceChange;
+
+    // Ensure prices don't go negative
+    currentPrice = Math.max(1, currentPrice);
+
+    const open = currentPrice - Math.random() * 1;
+    const high = currentPrice + Math.random() * 2;
+    const low = currentPrice - Math.random() * 2;
+    const close = currentPrice;
+
     data.push({
       date: currentDate.toISOString().split('T')[0],
-      open: Math.random() * 100 + 100,
-      high: Math.random() * 100 + 150,
-      low: Math.random() * 50 + 50,
-      close: Math.random() * 80 + 120,
+      open: open,
+      high: high,
+      low: low,
+      close: close,
       volume: Math.floor(Math.random() * 1000000),
     });
   }
