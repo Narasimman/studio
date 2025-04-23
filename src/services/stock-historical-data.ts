@@ -15,20 +15,21 @@ export async function getStockHistoricalData(ticker: string, period: string): Pr
   const data: StockHistoricalData[] = [];
 
   let currentPrice = Math.random() * 100 + 100; // Initialize with a random price
-
+  const volatility = 0.02; // Adjust for higher or lower volatility
   for (let i = 0; i < 30; i++) {
     const currentDate = new Date(startDate.setDate(startDate.getDate() + 1));
 
-    // Simulate price change with a small random factor
-    const priceChange = Math.random() * 4 - 2; // Random value between -2 and 2
+    // Generate a random percentage change within the volatility range
+    const percentageChange = (Math.random() * 2 * volatility - volatility);
+    const priceChange = currentPrice * percentageChange;
     currentPrice += priceChange;
 
     // Ensure prices don't go negative
     currentPrice = Math.max(1, currentPrice);
 
-    const open = currentPrice - Math.random() * 1;
-    const high = currentPrice + Math.random() * 2;
-    const low = currentPrice - Math.random() * 2;
+    const open = currentPrice - Math.random() * (currentPrice * 0.01); // Open close to current
+    const high = currentPrice + Math.random() * (currentPrice * 0.02); // High a bit higher
+    const low = currentPrice - Math.random() * (currentPrice * 0.02);  // Low a bit lower
     const close = currentPrice;
 
     data.push({
