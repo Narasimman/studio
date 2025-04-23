@@ -1,7 +1,27 @@
 "use client"
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import {
+  ComposedChart,
+  Line,
+  Bar,
+  Area,
+  PieChart,
+  Cell,
+  Scatter,
+  XAxis,
+  YAxis,
+  ZAxis,
+  CartesianGrid,
+  PolarGrid,
+  Legend,
+  Tooltip,
+  Brush,
+  ReferenceLine,
+  ReferenceArea,
+  ReferenceDot,
+  ResponsiveContainer
+} from "recharts";
 
 import { cn } from "@/lib/utils"
 
@@ -39,7 +59,7 @@ const ChartContainer = React.forwardRef<
   React.ComponentProps<"div"> & {
     config: ChartConfig
     children: React.ComponentProps<
-      typeof RechartsPrimitive.ResponsiveContainer
+      typeof ResponsiveContainer
     >["children"]
   }
 >(({ id, className, children, config, ...props }, ref) => {
@@ -58,9 +78,9 @@ const ChartContainer = React.forwardRef<
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%">
           {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        </ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )
@@ -100,29 +120,28 @@ ${colorConfig
   )
 }
 
-const Chart = RechartsPrimitive.ComposedChart;
-const ChartLine = RechartsPrimitive.Line;
-const ChartBar = RechartsPrimitive.Bar;
-const ChartArea = RechartsPrimitive.Area;
-const ChartPie = RechartsPrimitive.PieChart;
-const ChartPieSlice = RechartsPrimitive.Cell;
-const ChartScatter = RechartsPrimitive.Scatter;
-const ChartXAxis = RechartsPrimitive.XAxis;
-const ChartYAxis = RechartsPrimitive.YAxis;
-const ChartZAxis = RechartsPrimitive.ZAxis;
-const ChartCartesianGrid = RechartsPrimitive.CartesianGrid;
-const ChartPolarGrid = RechartsPrimitive.PolarGrid;
-const ChartLegend = RechartsPrimitive.Legend;
-const ChartTooltip = RechartsPrimitive.Tooltip;
-const ChartBrush = RechartsPrimitive.Brush;
-const ChartReferenceLine = RechartsPrimitive.ReferenceLine;
-const ChartReferenceArea = RechartsPrimitive.ReferenceArea;
-const ChartReferenceDot = RechartsPrimitive.ReferenceDot;
-const ChartCrosshair = RechartsPrimitive.Crosshair;
+const Chart = ComposedChart;
+const ChartLine = Line;
+const ChartBar = Bar;
+const ChartArea = Area;
+const ChartPie = PieChart;
+const ChartPieSlice = Cell;
+const ChartScatter = Scatter;
+const ChartXAxis = XAxis;
+const ChartYAxis = YAxis;
+const ChartZAxis = ZAxis;
+const ChartCartesianGrid = CartesianGrid;
+const ChartPolarGrid = PolarGrid;
+const ChartLegend = Legend;
+const ChartTooltip = Tooltip;
+const ChartBrush = Brush;
+const ChartReferenceLine = ReferenceLine;
+const ChartReferenceArea = ReferenceArea;
+const ChartReferenceDot = ReferenceDot;
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+  React.ComponentProps<typeof Tooltip> &
     React.ComponentProps<"div"> & {
       hideLabel?: boolean
       hideIndicator?: boolean
@@ -277,7 +296,7 @@ ChartTooltipContent.displayName = "ChartTooltipContent"
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    Pick<LegendProps, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
     }
@@ -394,5 +413,4 @@ export {
   ChartReferenceLine,
   ChartReferenceArea,
   ChartReferenceDot,
-  ChartCrosshair,
 }
