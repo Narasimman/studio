@@ -33,17 +33,20 @@ export async function getStockHistoricalData(ticker: string, period: string): Pr
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
-      throw new Error(`Failed to fetch historical data: ${response.status} ${response.statusText}`);
+      console.error(`Failed to fetch historical data: ${response.status} ${response.statusText}`);
+      return []; // Return an empty array in case of an error
     }
     const data = await response.json();
 
     if (data['Error Message']) {
-      throw new Error(`Alpha Vantage API Error: ${data['Error Message']}`);
+      console.error(`Alpha Vantage API Error: ${data['Error Message']}`);
+      return []; // Return an empty array in case of an API error
     }
 
     const timeSeries = data['Time Series (Daily)'];
     if (!timeSeries) {
-      throw new Error('No time series data found in the response.');
+      console.error('No time series data found in the response.');
+      return []; // Return an empty array if no data is found
     }
 
     const historicalData: StockHistoricalData[] = Object.entries(timeSeries).map(([date, values]) => ({
@@ -62,6 +65,6 @@ export async function getStockHistoricalData(ticker: string, period: string): Pr
     return historicalData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   } catch (error: any) {
     console.error("Error fetching stock historical data:", error);
-    throw new Error(`Failed to fetch historical data for ${ticker}: ${error.message}`);
+    return []; // Return an empty array in case of a general error
   }
 }
