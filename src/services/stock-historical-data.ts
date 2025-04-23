@@ -17,7 +17,8 @@ const cacheTTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export async function getStockHistoricalData(ticker: string, period: string): Promise<StockHistoricalData[]> {
   if (!apiKey) {
-    throw new Error('Alpha Vantage API key is missing. Please set the ALPHA_VANTAGE_API_KEY environment variable.');
+    console.error('Alpha Vantage API key is missing. Please set the ALPHA_VANTAGE_API_KEY environment variable.');
+    return [];
   }
 
   // Check if the data is already in the cache
