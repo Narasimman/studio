@@ -13,6 +13,20 @@ import {
   getStockFundamentalData,
   StockFundamentalData
 } from "@/services/stock-fundamental-data";
+import {
+  getStockHistoricalData,
+  StockHistoricalData,
+} from "@/services/stock-historical-data";
+import {
+  Chart,
+  ChartContainer,
+  ChartLegend,
+  ChartLine,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartXAxis,
+  ChartYAxis
+} from "@/components/ui/chart";
 
 const stockTickers = [
   "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "JPM", "V", "UNH", "WMT"
@@ -23,6 +37,7 @@ export default function Home() {
   const [recommendation, setRecommendation] = useState<StockRecommendation | null>(null);
   const [sentimentAnalysis, setSentimentAnalysis] = useState<any>(null);
   const [fundamentalData, setFundamentalData] = useState<StockFundamentalData | null>(null);
+  const [historicalData, setHistoricalData] = useState<StockHistoricalData[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -41,16 +56,24 @@ export default function Home() {
       const recommendationPromise = getStockRecommendation(ticker);
       const sentimentPromise = analyzeStockSentiment({ ticker });
       const fundamentalDataPromise = getStockFundamentalData(ticker);
+      const historicalDataPromise = getStockHistoricalData(ticker, "1mo");
 
-      const [recommendationResult, sentimentResult, fundamentalDataResult] = await Promise.all([
+      const [
+        recommendationResult,
+        sentimentResult,
+        fundamentalDataResult,
+        historicalDataResult
+      ] = await Promise.all([
         recommendationPromise,
         sentimentPromise,
-        fundamentalDataPromise
+        fundamentalDataPromise,
+        historicalDataPromise
       ]);
 
       setRecommendation(recommendationResult);
       setSentimentAnalysis(sentimentResult);
       setFundamentalData(fundamentalDataResult);
+      setHistoricalData(historicalDataResult);
     } catch (e: any) {
       console.error("Error fetching data:", e);
       setError(e.message || "Failed to fetch data. Please try again.");
@@ -84,6 +107,13 @@ export default function Home() {
   const handleSuggestionClick = (suggestion: string) => {
     setTicker(suggestion);
     setSuggestions([]);
+  };
+
+  const chartConfig = {
+    price: {
+      label: "Price",
+      color: "hsl(var(--primary))",
+    },
   };
 
   return (
@@ -138,7 +168,7 @@ export default function Home() {
         </Alert>
       )}
 
-      {recommendation && sentimentAnalysis && fundamentalData && !error && (
+      {recommendation && sentimentAnalysis && fundamentalData && historicalData && !error && (
         <div className="w-full max-w-md space-y-4">
           <Card>
             <CardHeader>
@@ -184,6 +214,33 @@ export default function Home() {
               <p>MACD: {fundamentalData.macd}</p>
               <p>SMA: {fundamentalData.sma}</p>
               <p>Volume: {fundamentalData.volume}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Historical Data (1 Month)</CardTitle>
+              <CardDescription>
+                Last month's stock prices
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[200px]">
+                <Chart data={historicalData}>
+                  <ChartLine
+                    type="monotone"
+                    dataKey="close"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <ChartXAxis dataKey="date" />
+                  <ChartYAxis />
+                  <ChartTooltip
+                    content={<ChartTooltipContent />}
+                  />
+                </Chart>
+              </ChartContainer>
             </CardContent>
           </Card>
         </div>

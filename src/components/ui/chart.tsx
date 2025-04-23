@@ -58,14 +58,14 @@ const ChartContainer = React.forwardRef<
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>
+        <RechartsPrimitive.ResponsiveContainer width="100%" height="100%">
           {children}
         </RechartsPrimitive.ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )
 })
-ChartContainer.displayName = "Chart"
+ChartContainer.displayName = "ChartContainer";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
@@ -100,7 +100,25 @@ ${colorConfig
   )
 }
 
-const ChartTooltip = RechartsPrimitive.Tooltip
+const Chart = RechartsPrimitive.ComposedChart;
+const ChartLine = RechartsPrimitive.Line;
+const ChartBar = RechartsPrimitive.Bar;
+const ChartArea = RechartsPrimitive.Area;
+const ChartPie = RechartsPrimitive.PieChart;
+const ChartPieSlice = RechartsPrimitive.Cell;
+const ChartScatter = RechartsPrimitive.Scatter;
+const ChartXAxis = RechartsPrimitive.XAxis;
+const ChartYAxis = RechartsPrimitive.YAxis;
+const ChartZAxis = RechartsPrimitive.ZAxis;
+const ChartCartesianGrid = RechartsPrimitive.CartesianGrid;
+const ChartPolarGrid = RechartsPrimitive.PolarGrid;
+const ChartLegend = RechartsPrimitive.Legend;
+const ChartTooltip = RechartsPrimitive.Tooltip;
+const ChartBrush = RechartsPrimitive.Brush;
+const ChartReferenceLine = RechartsPrimitive.ReferenceLine;
+const ChartReferenceArea = RechartsPrimitive.ReferenceArea;
+const ChartReferenceDot = RechartsPrimitive.ReferenceDot;
+const ChartCrosshair = RechartsPrimitive.Crosshair;
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
@@ -254,9 +272,7 @@ const ChartTooltipContent = React.forwardRef<
     )
   }
 )
-ChartTooltipContent.displayName = "ChartTooltip"
-
-const ChartLegend = RechartsPrimitive.Legend
+ChartTooltipContent.displayName = "ChartTooltipContent"
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
@@ -314,7 +330,7 @@ const ChartLegendContent = React.forwardRef<
     )
   }
 )
-ChartLegendContent.displayName = "ChartLegend"
+ChartLegendContent.displayName = "ChartLegendContent"
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
@@ -362,4 +378,21 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+  Chart,
+  ChartLine,
+  ChartBar,
+  ChartArea,
+  ChartPie,
+  ChartPieSlice,
+  ChartScatter,
+  ChartXAxis,
+  ChartYAxis,
+  ChartZAxis,
+  ChartCartesianGrid,
+  ChartPolarGrid,
+  ChartBrush,
+  ChartReferenceLine,
+  ChartReferenceArea,
+  ChartReferenceDot,
+  ChartCrosshair,
 }
