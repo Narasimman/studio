@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -10,8 +9,23 @@ import { analyzeStockSentiment } from "@/ai/flows/analyze-stock-sentiment";
 import { StockRecommendation } from "@/services/stock-recommendation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RefreshCw, CheckCircle, Info } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+
+const stockTickers = [
+  "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "JPM", "V", "UNH", "WMT"
+];
 
 export default function Home() {
+  const [open, setOpen] = React.useState(false)
   const [ticker, setTicker] = useState('');
   const [recommendation, setRecommendation] = useState<StockRecommendation | null>(null);
   const [sentimentAnalysis, setSentimentAnalysis] = useState<any>(null);
@@ -62,12 +76,49 @@ export default function Home() {
       </p>
 
       <div className="flex w-full max-w-md space-x-2 mb-6">
-        <Input
-          type="text"
-          placeholder="Enter stock ticker (e.g., AAPL)"
-          value={ticker}
-          onChange={(e) => setTicker(e.target.value.toUpperCase())}
-        />
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-[200px] justify-between"
+            >
+              {ticker
+                ? stockTickers.find((stock) => stock === ticker)
+                : "Select stock ticker..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search stock..." />
+              <CommandList>
+                <CommandEmpty>No stock found.</CommandEmpty>
+                <CommandGroup heading="Stocks">
+                  {stockTickers.map((stock) => (
+                    <CommandItem
+                      key={stock}
+                      value={stock}
+                      onSelect={(currentValue) => {
+                        setTicker(currentValue === ticker ? "" : currentValue)
+                        setOpen(false)
+                      }}
+                    >
+                      {stock}
+                      <Check
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          ticker === stock ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
         <Button onClick={handleSearch} disabled={loading}>
           {loading ? (
             <>
@@ -126,3 +177,6 @@ export default function Home() {
     </div>
   );
 }
+
+import { Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/lib/utils"
