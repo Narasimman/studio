@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'StockSage',
-  description: 'Get stock recommendations based on sentiment analysis.',
+  title: 'WealthTracker - Personal Finance Dashboard',
+  description: 'Track your finances, analyze spending, and grow your wealth with beautiful visualizations.',
 };
 
 export default function RootLayout({
