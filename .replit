@@ -1,0 +1,19 @@
+run = "npm run dev -- -p 3000"
+hidden = [".config", "tsconfig.json", "tsconfig.tsbuildinfo", "next-env.d.ts", ".next", ".swc"]
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run build && npm run start"]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[env]
+NEXT_TELEMETRY_DISABLED = "1"
+PORT = "3000"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
